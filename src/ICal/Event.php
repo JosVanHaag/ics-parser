@@ -2,6 +2,7 @@
 
 namespace ICal;
 
+#[\AllowDynamicProperties]
 class Event
 {
     // phpcs:disable Generic.Arrays.DisallowLongArraySyntax
