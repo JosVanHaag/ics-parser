@@ -7,153 +7,153 @@ class Event
 {
     // phpcs:disable Generic.Arrays.DisallowLongArraySyntax
 
-    const HTML_TEMPLATE = '<p>%s: %s</p>';
+    final const HTML_TEMPLATE = '<p>%s: %s</p>';
 
     /**
      * https://www.kanzaki.com/docs/ical/summary.html
      *
-     * @var string
+     * @var $summary
      */
     public $summary;
 
     /**
      * https://www.kanzaki.com/docs/ical/dtstart.html
      *
-     * @var string
+     * @var $dtstart
      */
     public $dtstart;
 
     /**
      * https://www.kanzaki.com/docs/ical/dtend.html
      *
-     * @var string
+     * @var $dtend
      */
     public $dtend;
 
     /**
      * https://www.kanzaki.com/docs/ical/duration.html
      *
-     * @var string
+     * @var $duration
      */
     public $duration;
 
     /**
      * https://www.kanzaki.com/docs/ical/dtstamp.html
      *
-     * @var string
+     * @var $dtstamp
      */
     public $dtstamp;
 
     /**
      * When the event starts, represented as a timezone-adjusted string
      *
-     * @var string
+     * @var $dtstart_tz
      */
     public $dtstart_tz;
 
     /**
      * When the event ends, represented as a timezone-adjusted string
      *
-     * @var string
+     * @var $dtend_tz
      */
     public $dtend_tz;
 
     /**
      * https://www.kanzaki.com/docs/ical/uid.html
      *
-     * @var string
+     * @var $uid
      */
     public $uid;
 
     /**
      * https://www.kanzaki.com/docs/ical/created.html
      *
-     * @var string
+     * @var $created
      */
     public $created;
 
     /**
      * https://www.kanzaki.com/docs/ical/lastModified.html
      *
-     * @var string
+     * @var $last_modified
      */
     public $last_modified;
 
     /**
      * https://www.kanzaki.com/docs/ical/description.html
      *
-     * @var string
+     * @var $description
      */
     public $description;
 
     /**
      * https://www.kanzaki.com/docs/ical/location.html
      *
-     * @var string
+     * @var $location
      */
     public $location;
 
     /**
      * https://www.kanzaki.com/docs/ical/sequence.html
      *
-     * @var string
+     * @var $sequence
      */
     public $sequence;
 
     /**
      * https://www.kanzaki.com/docs/ical/status.html
      *
-     * @var string
+     * @var $status
      */
     public $status;
 
     /**
      * https://www.kanzaki.com/docs/ical/transp.html
      *
-     * @var string
+     * @var $transp
      */
     public $transp;
 
     /**
      * https://www.kanzaki.com/docs/ical/organizer.html
      *
-     * @var string
+     * @var $organizer
      */
     public $organizer;
 
     /**
      * https://www.kanzaki.com/docs/ical/attendee.html
      *
-     * @var string
+     * @var $attendee
      */
     public $attendee;
 
     /**
      * Creates the Event object
      *
-     * @param  array $data
      * @return void
      */
-    public function __construct(array $data = array())
+    public function __construct(array $data = [])
     {
         foreach ($data as $key => $value) {
             $variable = self::snakeCase($key);
             $this->{$variable} = self::prepareData($value);
+            //$this->{$variable} = self::class . 'prepareData($value)';
         }
     }
 
     /**
      * Prepares the data for output
      *
-     * @param  mixed $value
      * @return mixed
      */
-    protected function prepareData($value)
+    protected function prepareData(mixed $value)
     {
         if (is_string($value)) {
             return stripslashes(trim(str_replace('\n', "\n", $value)));
         } elseif (is_array($value)) {
-            return array_map('self::prepareData', $value);
+            //return array_map('self::prepareData', $value);
+            return array_map(self::class . '::prepareData', $value);
         }
 
         return $value;
@@ -168,25 +168,7 @@ class Event
      */
     public function printData($html = self::HTML_TEMPLATE)
     {
-        $data = array(
-            'SUMMARY'       => $this->summary,
-            'DTSTART'       => $this->dtstart,
-            'DTEND'         => $this->dtend,
-            'DTSTART_TZ'    => $this->dtstart_tz,
-            'DTEND_TZ'      => $this->dtend_tz,
-            'DURATION'      => $this->duration,
-            'DTSTAMP'       => $this->dtstamp,
-            'UID'           => $this->uid,
-            'CREATED'       => $this->created,
-            'LAST-MODIFIED' => $this->last_modified,
-            'DESCRIPTION'   => $this->description,
-            'LOCATION'      => $this->location,
-            'SEQUENCE'      => $this->sequence,
-            'STATUS'        => $this->status,
-            'TRANSP'        => $this->transp,
-            'ORGANISER'     => $this->organizer,
-            'ATTENDEE(S)'   => $this->attendee,
-        );
+        $data = ['SUMMARY'       => $this->summary, 'DTSTART'       => $this->dtstart, 'DTEND'         => $this->dtend, 'DTSTART_TZ'    => $this->dtstart_tz, 'DTEND_TZ'      => $this->dtend_tz, 'DURATION'      => $this->duration, 'DTSTAMP'       => $this->dtstamp, 'UID'           => $this->uid, 'CREATED'       => $this->created, 'LAST-MODIFIED' => $this->last_modified, 'DESCRIPTION'   => $this->description, 'LOCATION'      => $this->location, 'SEQUENCE'      => $this->sequence, 'STATUS'        => $this->status, 'TRANSP'        => $this->transp, 'ORGANISER'     => $this->organizer, 'ATTENDEE(S)'   => $this->attendee];
 
         // Remove any blank values
         $data = array_filter($data);
